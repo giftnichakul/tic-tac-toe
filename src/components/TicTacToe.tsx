@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 
-const winCase =
-  [ [0,1,2]
-  , [3,4,5]
-  , [6,7,8]
-  , [0,3,6]
-  , [1,4,7]
-  , [2,5,8]
-  , [0,4,8]
-  , [2,4,6] ]
+const WIN_CASE =
+  [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+  ]
+
+const CIRCLE = 'O';
+const CROSS = 'X';
 
 function findWinner(value: string[]){
-  for (let i=0;i < winCase.length; i++){
-    let win = winCase[i];
+  for (let i=0;i < WIN_CASE.length; i++){
+    let win = WIN_CASE[i];
     if(!value[win[0]] || !value[win[1]] || !value[win[2]]) continue;
     if(value[win[0]] === value[win[1]] && value[win[0]] === value[win[2]]){
       return i;
@@ -23,16 +28,12 @@ function findWinner(value: string[]){
 
 export function TicTacToe() {
 
-  const CIRCLE = 'O';
-  const CROSS = 'X';
-
   const [player, setPlayer] = useState<boolean>(true);
   const [value, setValue] = useState<string[]>(Array(9).fill(''));
   const [color, setColor] = useState<string[]>(Array(9).fill('dark:text-white text-black'));
   const [result, setResult] = useState<string>('');
   const [count, setCount] = useState<number>(0);
   const [disable, setDisable] = useState<boolean[]>(Array(9).fill(false));
-
 
   const updateBoard = (index: number) => {
     const tmpValue = value;
@@ -45,10 +46,10 @@ export function TicTacToe() {
     setValue(tmpValue);
     setDisable(tmpDisable);
     setCount(count => count + 1);
-    let winner = findWinner(tmpValue);
+    const winner = findWinner(tmpValue);
     if(winner !== -1){
       const tmpColor = color;
-      for(let idx of winCase[winner]){
+      for(let idx of WIN_CASE[winner]){
         tmpColor[idx] = 'text-rose-200';
       }
       setColor(tmpColor);
@@ -76,20 +77,20 @@ export function TicTacToe() {
       <button className={`${color[index]} dark:bg-black bg-white text-8xl h-24 md:h-36
       `}
       disabled={disable[index]}
-      onClick={() => { updateBoard(index)}}>
+      onClick={() => updateBoard(index)}>
         {circle}
       </button>
     )
   }
 
+  const getStyle = ({result, player} : { result: string, player: boolean}) => {
+    if(result) return 'bg-inherit text-gray-400'
+    if(player) return 'bg-slate-200 text-black'
+    return 'bg-inherit text-gray-400'
+  }
+
   function Player({ player, name } : { player: boolean, name: string}) {
-    let style: string;
-    if(result){
-      style = 'bg-inherit text-gray-400';
-    }else{
-      if(player) style='bg-slate-200 text-black';
-      else style='bg-inherit text-gray-400';
-    }
+    const style = getStyle({result, player})
     return (
       <div className={`p-4 rounded-md text-2xl ${style}`}>
         <h1>{name} Turns</h1>

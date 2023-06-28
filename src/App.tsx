@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { TicTacToe } from './components/TicTacToe';
 import { FiMoon, FiSun } from "react-icons/fi";
 
+type ThemeType = 'light' | 'dark'
+
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState<ThemeType>('light');
 
   useEffect(() => {
     if(window.matchMedia(('prefers-color-schme-dark')).matches){
